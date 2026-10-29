@@ -37,6 +37,8 @@ function matrix(rows,maximum=16){
  if(rows.some(r=>!Array.isArray(r)||r.length!==rows[0].length||r.some(v=>typeof v!=='string'||v.length>600)))throw new Problem('Tabela irregular ou célula com mais de 600 caracteres.');
  return rows;
 }
+// Aceita Mês | Valor (2 colunas) ou Mês | Realizado | Meta (3). Com 2 colunas, a Meta fica vazia.
+function chartRows(rows){return rows.length&&rows[0].length===2?rows.map((r,i)=>[...r,i===0?'Meta':'']):rows;}
 export function cleanTable(rows){
  const filled=r=>r.filter(v=>String(v).trim()).length,need=r=>Math.ceil(r.length/2),out=[...rows];
  while(out.length>1&&filled(out[0])<need(out[0])&&filled(out[1])>filled(out[0]))out.shift();
@@ -132,9 +134,9 @@ export function validateContent(st,s,c){
   out[key]=String(v);
  }
  for(const key of ['chart_without','chart_with']){
-  const rows=matrix(c[key]??[],3);
+  const rows=chartRows(matrix(c[key]??[],3));
   if(rows.length){
-   if(rows[0].length!==3||rows.length>13)throw new Problem('Gráfico: cole Mês | Realizado | Meta, com até 12 meses.');
+   if(rows[0].length!==3||rows.length>13)throw new Problem('Gráfico: cole Mês | Valor ou Mês | Realizado | Meta, com até 12 meses.');
    for(const r of rows.slice(1)){number(r[1]);number(r[2]);}
   }
   out[key]=rows;
@@ -145,9 +147,9 @@ export function validateContent(st,s,c){
   if(!ch||typeof ch!=='object'||Array.isArray(ch))throw new Problem('Gráfico inválido.');
   const title=String(ch.title??'').trim();
   if(title.length>100)throw new Problem('O título do gráfico pode ter até 100 caracteres.');
-  const rows=matrix(ch.rows??[],3);
+  const rows=chartRows(matrix(ch.rows??[],3));
   if(rows.length){
-   if(rows[0].length!==3||rows.length>13)throw new Problem('Gráfico: cole Mês | Realizado | Meta, com até 12 meses.');
+   if(rows[0].length!==3||rows.length>13)throw new Problem('Gráfico: cole Mês | Valor ou Mês | Realizado | Meta, com até 12 meses.');
    for(const r of rows.slice(1)){number(r[1]);number(r[2]);}
   }
   out.charts.push({title,rows});
