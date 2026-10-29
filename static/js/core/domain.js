@@ -4,9 +4,9 @@ export class Problem extends Error{constructor(message,status=400){super(message
 export const config={mediaPrefix:''};
 const clone=x=>structuredClone(x);
 export const randomHex=n=>[...crypto.getRandomValues(new Uint8Array(n))].map(b=>b.toString(16).padStart(2,'0')).join('');
-export const LAYOUTS=new Set(['pdf','ata','image','gallery','visits','visits-clients','table','table-kpi','table-bullets','works','events','placeholder','text']);
-export const ADDABLE=['text','image','table','table-bullets','table-kpi','gallery','events','works','visits','visits-clients'];
-export const emptyContent=()=>({rows:[],bullets:[],text:'',image:null,photos:[],visits_agencies:'',visits_partners:'',resolved:'',chart_without:[],chart_with:[],pdf:null,font_size:0,projection_last:false});
+export const LAYOUTS=new Set(['pdf','ata','image','gallery','visits','visits-clients','charts','table','table-kpi','table-bullets','works','events','placeholder','text']);
+export const ADDABLE=['text','image','table','table-bullets','table-kpi','gallery','events','works','visits','visits-clients','charts'];
+export const emptyContent=()=>({rows:[],bullets:[],text:'',image:null,photos:[],visits_agencies:'',visits_partners:'',resolved:'',chart_without:[],chart_with:[],pdf:null,font_size:0,projection_last:false,charts:[]});
 export const now=()=>new Date(Date.now()-3*3600*1000).toISOString().slice(0,19)+'-03:00';
 
 export function admin(u){if(u.role!=='admin')throw new Problem('Ação exclusiva dos administradores.',403);}
@@ -138,6 +138,19 @@ export function validateContent(st,s,c){
    for(const r of rows.slice(1)){number(r[1]);number(r[2]);}
   }
   out[key]=rows;
+ }
+ const charts=c.charts??[];
+ if(!Array.isArray(charts)||charts.length>4)throw new Problem('Use até 4 gráficos por lâmina.');
+ for(const ch of charts){
+  if(!ch||typeof ch!=='object'||Array.isArray(ch))throw new Problem('Gráfico inválido.');
+  const title=String(ch.title??'').trim();
+  if(title.length>100)throw new Problem('O título do gráfico pode ter até 100 caracteres.');
+  const rows=matrix(ch.rows??[],3);
+  if(rows.length){
+   if(rows[0].length!==3||rows.length>13)throw new Problem('Gráfico: cole Mês | Realizado | Meta, com até 12 meses.');
+   for(const r of rows.slice(1)){number(r[1]);number(r[2]);}
+  }
+  out.charts.push({title,rows});
  }
  const fs=c.font_size??0;
  if(typeof fs!=='number'||!Number.isInteger(fs)||!(fs===0||(fs>=8&&fs<=32)))throw new Problem('Tamanho de fonte da tabela inválido.');

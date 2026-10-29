@@ -52,3 +52,17 @@
 .plain-table td:first-child{text-align:left}
 .generic-bar{display:flex;justify-content:space-between;align-items:center;margin:6px 0 10px;padding:8px 10px;background:#eef5fa;border-radius:4px;font-size:12px;color:#456}.generic-bar button{padding:5px 9px;font-size:11px}
 .vc-layout .image-area img{height:auto;max-height:100%}
+
+/* Lâmina de gráficos (até 4) */
+.charts-area{height:100%}
+.charts-grid{display:grid;gap:18px 26px;height:100%}
+.charts-1{grid-template-columns:1fr}.charts-2{grid-template-columns:1fr 1fr}
+.charts-3{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}.charts-3 .chart:first-child{grid-column:1/-1}
+.charts-4{grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr}
+.charts-grid .chart{display:flex;flex-direction:column;min-height:0;min-width:0}
+.charts-grid .chart h3{flex:none;min-height:26px}
+.charts-grid .chart svg{flex:1;min-height:0;width:100%;height:auto}
+.charts-grid .chart .empty-block{flex:1;height:auto}
+.chart-editor{border:1px solid #dce2e9;border-radius:6px;padding:8px 10px;margin:8px 0;background:#fafbfc}
+.chart-editor textarea{min-height:90px}
+.chart-editor button{margin-top:6px;font-size:11px;padding:5px 8px}
