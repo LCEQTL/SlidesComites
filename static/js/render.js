@@ -199,6 +199,12 @@ function visitsChart(rows){
  return `<svg class="visits-chart" viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg"><text x="${W/2}" y="20" text-anchor="middle" font-size="17" font-weight="bold" fill="#1a1f6e">QTD VISITAS MÊS VIGENTE${month}</text>${pts.map(p=>`<rect x="${p.x-bw/2}" y="${p.y}" width="${bw}" height="${base-p.y}" fill="#00b050"/>`).join('')}<line x1="0" y1="${base}" x2="${W}" y2="${base}" stroke="#222" stroke-width="1.5"/>${pts.length>1?`<polyline points="${pts.map(p=>`${p.x},${p.y}`).join(' ')}" fill="none" stroke="#111" stroke-width="3" stroke-dasharray="9 6"/>`:''}${pts.map(p=>`<text x="${p.x}" y="${p.y-8}" text-anchor="middle" font-size="17" font-weight="bold" fill="#111">${p.v}</text><text x="${p.x}" y="${base+19}" text-anchor="middle" font-size="12" fill="#444">${esc(p.label)}</text>`).join('')}</svg>`;
 }
 function strip(list){const info=stripInfo(list);return `<div class="bullet-strip" style="grid-template-columns:repeat(${info.cols},minmax(0,1fr))">${list.map(b=>`<div class="strip-card">${esc(b)}</div>`).join('')}</div>`;}
+// Imagem + destaques (metade/metade): o texto diminui sozinho até todos os destaques caberem.
+function ibFont(list){
+ const items=(list||[]).filter(Boolean);
+ for(let f=24;f>=13;f--){const h=items.reduce((a,b)=>a+wrapCount(b,560-32,f,false)*f*1.3+22,0)+Math.max(0,items.length-1)*12;if(h<=545)return f;}
+ return 13;
+}
 function bullets(c){return `<div class="highlight-list">${c.bullets?.filter(Boolean).map(b=>`<div class="highlight-card">${esc(b)}</div>`).join('')||empty('Adicionar destaques')}</div>`;}
 const num=v=>{let t=String(v).replace(/[%R$\s]/g,'');if(!t||t==='-'||t==='—')return null;if(t.includes(','))t=t.replace(/\./g,'').replace(',','.');return Number(t);};
 const isAcc=v=>/^AC[UC]/.test(normText(v));
@@ -221,7 +227,8 @@ export function renderSlide(state,item,{editing=false}={}){
  else if(s.layout==='placeholder')content=zone('placeholder',empty('Modelo do Anexo IV a definir'),'image-area');
  else if(s.layout==='image')content=zone('image',img(c.image),'image-area');
  else if(s.layout==='gallery')content=zone('photos',gallery(part.photos),'gallery-area');
- else if(s.layout==='visits')content=`<div class="visits-layout">${zone('bullets',`<div class="metric"><strong>${esc(c.visits_agencies||'—')}</strong>Visitas a agências</div><div class="metric"><strong>${esc(c.visits_partners||'—')}</strong>Visitas a credenciados</div>${bullets({...c,bullets:part.bullets})}`)}${zone('image',img(c.image),'image-area')}</div>`;
+ else if(s.layout==='image-bullets')content=`<div class="ib-layout">${zone('image',img(c.image),'image-area')}${zone('bullets',`<div class="ib-list" style="font-size:${ibFont(c.bullets)}px">${bullets(c)}</div>`,'ib-bullets')}</div>`;
+  else if(s.layout==='visits')content=`<div class="visits-layout">${zone('bullets',`<div class="metric"><strong>${esc(c.visits_agencies||'—')}</strong>Visitas a agências</div><div class="metric"><strong>${esc(c.visits_partners||'—')}</strong>Visitas a credenciados</div>${bullets({...c,bullets:part.bullets})}`)}${zone('image',img(c.image),'image-area')}</div>`;
  else if(s.layout==='table-bullets'){const list=part.bullets||[];content=`<div class="tb-layout">${list.length?zone('bullets',strip(list),'strip-area'):''}${zone('rows',table(s,part.rows,part),'table-area')}</div>${!list.length&&editing&&(item.part||0)===0?'<div class="edit-zone add-highlights" data-field="bullets" tabindex="0" role="button" aria-label="Adicionar destaques">+ Destaques (opcional)</div>':''}`;}
   else if(s.layout==='visits-clients')content=`<div class="vc-layout"><div class="vc-left">${zone('rows',`${(item.part||0)===0?`<div class="chart-area">${visitsChart(c.rows)}</div>`:''}${table(s,part.rows,part)}`,'table-area')}</div>${zone('image',img(c.image),'image-area')}</div>`;
   else if(s.layout==='charts'){const list=(c.charts||[]).filter(x=>x.rows?.length||x.title);content=zone('charts',list.length?`<div class="charts-grid charts-${list.length}">${list.map(x=>chart(x.rows,esc(x.title||''),c.projection_last)).join('')}</div>`:empty('Adicione até 4 gráficos de barras'),'charts-area');}

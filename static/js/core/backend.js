@@ -53,7 +53,7 @@ export function createBackend({store,env}){
   if(st0.mode==='presenting')throw new Problem('Apresentação oficial bloqueia alterações.',423);
   const sl0=slideFor(st0,u0,ident);checkRevision(sl0,{revision});
   if(kind==='image'){
-   if(!(gallery?['gallery','events']:['image','visits','visits-clients','events']).includes(sl0.layout))throw new Problem('Este modelo não aceita este tipo de imagem.');
+   if(!(gallery?['gallery','events']:['image','visits','visits-clients','image-bullets','events']).includes(sl0.layout))throw new Problem('Este modelo não aceita este tipo de imagem.');
    if(gallery&&(sl0.content.photos.length>=40||caption.length>100))throw new Problem('Limite: 40 imagens e 100 caracteres por legenda.');
   }else if(ident!=='dds')throw new Problem('PDF externo está disponível somente no DDS.');
   let result;

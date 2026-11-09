@@ -4,8 +4,8 @@ export class Problem extends Error{constructor(message,status=400){super(message
 export const config={mediaPrefix:''};
 const clone=x=>structuredClone(x);
 export const randomHex=n=>[...crypto.getRandomValues(new Uint8Array(n))].map(b=>b.toString(16).padStart(2,'0')).join('');
-export const LAYOUTS=new Set(['pdf','ata','image','gallery','visits','visits-clients','charts','table','table-kpi','table-bullets','works','events','placeholder','text']);
-export const ADDABLE=['text','image','table','table-bullets','table-kpi','gallery','events','works','visits','visits-clients','charts'];
+export const LAYOUTS=new Set(['pdf','ata','image','gallery','visits','visits-clients','charts','image-bullets','table','table-kpi','table-bullets','works','events','placeholder','text']);
+export const ADDABLE=['text','image','table','table-bullets','table-kpi','gallery','events','works','visits','visits-clients','charts','image-bullets'];
 export const emptyContent=()=>({rows:[],bullets:[],text:'',image:null,photos:[],visits_agencies:'',visits_partners:'',resolved:'',chart_without:[],chart_with:[],pdf:null,font_size:0,projection_last:false,charts:[]});
 export const now=()=>new Date(Date.now()-3*3600*1000).toISOString().slice(0,19)+'-03:00';
 

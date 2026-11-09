@@ -66,3 +66,11 @@
 .chart-editor{border:1px solid #dce2e9;border-radius:6px;padding:8px 10px;margin:8px 0;background:#fafbfc}
 .chart-editor textarea{min-height:90px}
 .chart-editor button{margin-top:6px;font-size:11px;padding:5px 8px}
+
+/* Imagem + destaques (metade/metade) */
+.ib-layout{display:grid;grid-template-columns:1fr 1fr;gap:36px;height:100%}
+.ib-layout .image-area{align-items:flex-start}
+.ib-bullets{min-width:0}
+.ib-list .highlight-list{display:flex;flex-direction:column;gap:12px}
+.ib-list .highlight-card{font-size:1em;line-height:1.3;padding:10px 14px;overflow-wrap:break-word}
+.ib-layout .image-area img{height:auto;max-height:100%}
